@@ -1,6 +1,6 @@
 import torch
 import Model, Embedding
-from common.ModelAPI import ModelHandler, Predict, ModelInfo
+from common.ModelAPI import ModelHandler, Predict,Text, ModelInfo
 
 
 
@@ -24,19 +24,19 @@ class Ensemble_Model(ModelHandler):
         self.model = self.model.to(device)
 
     @torch.no_grad()
-    def invoke(self, request: Request) -> Response:
+    def invoke(self, request: Predict.Request) -> Predict.Response:
         """使用gemini分類一個問題所屬的類別"""
         # 取出尾part
-        part = request.parts[-1]  
+        part:Text = request.parts[-1]  
         #從part拿內容
-        content = part.content
+        text = part.text
         #計算嵌入內容
-        embed = self.embed_model.encode(content)
+        embed = self.embed_model.encode(text)
         embed = torch.from_numpy(embed).to(torch.float32).to(self.device)
         #計算閘控分數
         score = self.model(embed.unsqueeze(0)).squeeze(0)
         score = list(map(float, score)) #轉換成 Iterable[float32]
-        return Response("許銘順", request.userID, score)
+        return Predict.Response( score)
 
     def model_info(self) -> ModelInfo.Response:
         return ModelInfo.Response("VincentEnsemble", "1.0")
