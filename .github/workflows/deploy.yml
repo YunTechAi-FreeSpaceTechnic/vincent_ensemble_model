@@ -12,5 +12,5 @@ jobs:
       - name: Use model server build action
         uses: YunTechAi-FreeSpaceTechnic/actions@main
         with:
-          token: ${{ secrets.TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
           extra_tags: ${{ github.ref_name }}
