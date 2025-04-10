@@ -1,0 +1,16 @@
+name: Deploy Docker Image
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Use model server build action
+        uses: YunTechAi-FreeSpaceTechnic/actions@main
+        with:
+          token: ${{ secrets.TOKEN }}
+          extra_tags: ${{ github.ref_name }}
